@@ -225,10 +225,119 @@ int main(void)
                     pingScan(result);
                 }
             }
+<<<<<<< HEAD
             else if (buffer[0] == 'm') //Send secret message
             {
                 while (buffer[i] != '\0')
                 {
+=======
+            else if (buffer[0] == 'm')
+                       {
+                           while (buffer[i] != '\0') {
+                               result *= 10;
+                               result += buffer[i] - '0';
+                               i++;
+                           }
+
+                           lcd_rotatingBanner();
+                       }
+
+        }
+        kill_action = 0;
+        timer_waitMillis(100);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //Nina Gadelha 5/2/2024 1:10am
+    //TODO: 
+    // 1) send GUI distances/other info
+    // 2) Impliment scans (IR and PING)
+
+    // void scan(int start, int end, int count);
+    // void pingScan(int angle);
+    // double move_forward();
+    // double move_backward();
+    // double turn_left();
+    // double turn_right();
+
+    //in main
+    while(1){
+
+        //Initialize everything: maybe more?
+        timer_init();
+        lcd_init();
+        uart_interrupt_init();
+        ping_init();
+        servo_init();
+
+        oi_init(sensor_data);
+
+        int i = 2;
+        int result = 0;
+        // Parse the buffer and run the command
+        if (buffer[0] == 'w'){
+            while (buffer[i] != ' ' && buffer[i] != '\0') {
+                result *= 10;
+                result += buffer[i] - '0';
+                i++;
+            }
+            move_forward(sensor_data, result);
+        }
+        else if (buffer[0] == 'a'){
+            while (buffer[i] != ' ' && buffer[i] != '\0') {
+                result *= 10;
+                result += buffer[i] - '0';
+                i++;
+            }
+            turn_left(sensor_data, result);
+        }
+        else if (buffer[0] == 's'){
+            while (buffer[i] != ' ' && buffer[i] != '\0') {
+                result *= 10;
+                result += buffer[i] - '0';
+                i++;
+            }
+            move_backward(sensor_data, result);
+        }
+        else if (buffer[0] == 'd'){
+            while (buffer[i] != ' ' && buffer[i] != '\0') {
+                result *= 10;
+                result += buffer[i] - '0';
+                i++;
+            }
+            turn_right(sensor_data, result);
+            }
+        else if (buffer[0] == 'x'){
+            i = 4;
+            int j;
+            int IRVals[3];
+            if (buffer[2] == 'i'){
+                for (j = 0; j < 3; j++) {
+                    while (buffer[i] != ' ' &&  buffer[i] != '\0') {
+                        result *= 10;
+                        result += buffer[i] - '0';
+                            i++;
+                    }
+                    i += 2;
+                    IRVals[j] = result;
+                    result = 0;
+                }
+                scan(IRVals[0], IRVals[1], IRVals[2]);
+            }
+            else if (buffer[2] == 'p'){
+                while (buffer[i] != ' ' &&  buffer[i] != '\0') {
+>>>>>>> 55250e04ff28d4f2b6d8a1ff46265adab8afe518
                     result *= 10;
                     result += buffer[i] - '0';
                     i++;

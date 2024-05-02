@@ -8,4 +8,7 @@ void servo_set(float pos);
 
 void servo_calibrate();
 
+extern int pos0;
+extern int pos180;
+
 #endif

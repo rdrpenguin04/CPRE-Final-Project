@@ -146,8 +146,12 @@ void UART1_Handler(void)
         byte_received = uart_receive();
         uart_sendChar(byte_received);
 
-        //if byte received is a carriage return
-        if (byte_received == '\r')
+        if (byte_received == '\x7f') //if byte received is a backspace character
+        {
+            if (buffer_len > 0)
+                buffer[--buffer_len] = '\0';
+        }
+        else if (byte_received == '\r') //if byte received is a carriage return
         {
             //send a newline character back to PuTTY
             uart_sendChar('\n');

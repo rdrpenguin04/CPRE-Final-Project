@@ -4,8 +4,14 @@
 #include "Timer.h"
 #include <math.h>
 
+int pos0 = 336000; // ideal calibration for 0 degrees
+int pos180 = 352000; // ideal calibration for 180 degrees
+
+static int lastVal;
+
 void servo_init()
 {
+    lastVal = pos0;
     SYSCTL_RCGCGPIO_R |= 0x02;
     while ((SYSCTL_PRGPIO_R & 0x02) == 0);
     SYSCTL_RCGCTIMER_R |= 0x02;
@@ -26,17 +32,13 @@ void servo_init()
     TIMER1_CTL_R |= 0x0100;
 }
 
-int pos0 = 336000; // ideal calibration for 0 degrees
-int pos180 = 352000; // ideal calibration for 180 degrees
-
 // pos must be a value from 0 to 180
 void servo_set(float pos)
 {
-    int lastVal = pos0;
     int val = pos / 180 * (pos180 - pos0) + pos0;
     TIMER1_TBPR_R = val >> 16;
     TIMER1_TBILR_R = val & 0xFFFF;
-    timer_waitMillis(abs(val - lastVal) / 200);
+    timer_waitMillis(abs(val - lastVal) / 30);
     lastVal = val;
 }
 

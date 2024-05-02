@@ -365,7 +365,9 @@ int main(void)
 
 
     //Nina Gadelha 5/2/2024 1:10am
-    //TODO: send GUI distances/other info
+    //TODO: 
+    // 1) send GUI distances/other info
+    // 2) Impliment scans (IR and PING)
 
     // void scan(int start, int end, int count);
     // void pingScan(int angle);

@@ -351,5 +351,158 @@ int main(void)
         kill_action = 0;
         timer_waitMillis(100);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //Nina Gadelha 5/2/2024 
+
+    //Initialize everything: maybe more?
+    timer_init();
+    lcd_init();
+    uart_interrupt_init();
+    ping_init();
+    servo_init();
+
+    //TODO: send GUI distances/other info
+
+    while(1){
+
+        oi_init(sensor_data);
+
+        int i = 2;
+        int result = 0;
+        // Parse the buffer and run the command
+        if (buffer[0] == 'w'){
+            while (buffer[i] != ' ' && buffer[i] != '\0') {
+                result *= 10;
+                result += buffer[i] - '0';
+                i++;
+            }
+            move_forward(sensor_data, result);
+        }
+        else if (buffer[0] == 'a'){
+            while (buffer[i] != ' ' && buffer[i] != '\0') {
+                result *= 10;
+                result += buffer[i] - '0';
+                i++;
+            }
+            turn_left(sensor_data, result);
+        }
+        else if (buffer[0] == 's'){
+            while (buffer[i] != ' ' && buffer[i] != '\0') {
+                result *= 10;
+                result += buffer[i] - '0';
+                i++;
+            }
+            move_backward(sensor_data, result);
+        }
+        else if (buffer[0] == 'd'){
+            while (buffer[i] != ' ' && buffer[i] != '\0') {
+                result *= 10;
+                result += buffer[i] - '0';
+                i++;
+            }
+            turn_right(sensor_data, result);
+            }
+        else if (buffer[0] == 'x'){
+            i = 4;
+            int j;
+            int IRVals[3];
+            if (buffer[2] == 'i'){
+                for (j = 0; j < 3; j++) {
+                    while (buffer[i] != ' ' &&  buffer[i] != '\0') {
+                        result *= 10;
+                        result += buffer[i] - '0';
+                            i++;
+                    }
+                    i += 2;
+                    IRVals[j] = result;
+                    result = 0;
+                }
+                scan(IRVals[0], IRVals[1], IRVals[2]);
+            }
+            else if (buffer[2] == 'p'){
+                while (buffer[i] != ' ' &&  buffer[i] != '\0') {
+                    result *= 10;
+                    result += buffer[i] - '0';
+                    i++;
+                }
+                pingScan(result);
+            }
+    }
+    else if (buffer[0] == 'm'){
+        while (buffer[i] != '\0') {
+            result *= 10;
+            result += buffer[i] - '0';
+            i++;
+            }
+
+        lcd_rotatingBanner();
+    }
+    else if (buffer[0] == 'k'){
+        while (buffer[i] != '\0') {
+            result *= 10;
+            result += buffer[i] - '0';
+            i++;
+            }
+        oi_setWheels(0,0);
+    }
+
+
+        if(sensor_data->cliffLeftSignal < 15 || sensor_data->cliffFrontLeftSignal < 15 || sensor_data->cliffRightSignal < 15 || sensor_data->cliffFrontRightSignal < 15){
+            uart_sendStr("Hole nearby.");
+            oi_setWheels(0,0);
+            //auto turn or leave to driver??
+            if(sensor_data->cliffLeftSignal < sensor_data->cliffRightSignal){
+                move_backwards(sensor_data);
+                timer_waitMillis(100);
+                turn_right(sensor_data, 90);
+            }
+            else{
+                move_backwards(sensor_data);
+                timer_waitMillis(100);
+                turn_left(sensor_data, 90);
+            }
+        }
+
+        if(sensor_data->bumpRight){
+            uart_sendStr("Small object detected: right.");
+            move_backwards(sensor_data);
+            oi_init(sensor_data);
+            //auto turn or leave to driver??
+        }
+        else if(sensor_data->bumpLeft){
+            uart_sendStr("Small object detected: left.");
+             move_backwards(sensor_data);
+            oi_init(sensor_data);
+            //auto turn or leave to driver??
+        }
+            
+        //bounds of course?
+         if(sensor_data->cliffFrontLeftSignal > ?? || sensor_data->cliffFrontRightSignal > ??){    
+            uart_sendStr("Out of bounds nearby.");
+            oi_setWheels(0,0);
+            //auto turn or leave to driver??
+        }
+
+        //move_forward
+        //move_backwards
+        //turn_right
+        //turn_left
+        //scan (1) IR    (2) Ping
+
+
+         //??????   
+        }     
+    }
 }
-//test

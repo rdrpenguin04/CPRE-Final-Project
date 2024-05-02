@@ -13,12 +13,17 @@
 #include "driverlib/interrupt.h"
 #include <inc/tm4c123gh6pm.h>
 #include "uart-interrupt.h"
+#include "movement.h"
 
 volatile int run_scan = 0;
 volatile int run_calibrate = 0;
 volatile int run_go = 0;
 volatile int kill_action = 0;
 volatile char byte_received = 0;
+
+volatile char buffer[BUFFER_MAX_LEN];
+volatile int buffer_len = 0;
+volatile int buffer_ready = 0;
 
 void uart_interrupt_init(void)
 {
@@ -146,6 +151,8 @@ void UART1_Handler(void)
         {
             //send a newline character back to PuTTY
             uart_sendChar('\n');
+            buffer[buffer_len++] = '\0';
+            buffer_ready = 1;
         }
         else
         {
@@ -154,7 +161,17 @@ void UART1_Handler(void)
             //code to update global shared variables
             //DO NOT PUT TIME-CONSUMING CODE IN AN ISR
 
-            if (byte_received == 's')
+            if (buffer_len >= BUFFER_MAX_LEN)
+            {
+                // TODO: handle buffer overrun gracefully
+                for(;;); // Until then, crash.
+            }
+            else
+            {
+                buffer[buffer_len++] = byte_received;
+            }
+
+            if (byte_received == 'x')
             {
                 run_scan = 1;
             }
@@ -170,6 +187,22 @@ void UART1_Handler(void)
             {
                 kill_action = 1;
             }
+//            if (byte_received == 'w')
+//            {
+//                move_forward(sensor_data, 10);
+//            }
+//            if (byte_received == 'a')
+//            {
+//                turn_left(sensor_data, 2);
+//            }
+//            if (byte_received == 's')
+//            {
+//                move_backward(sensor_data, 10);
+//            }
+//            if (byte_received == 'd')
+//            {
+//                move_right(sensor_data, 2);
+//            }
         }
     }
 }

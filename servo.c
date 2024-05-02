@@ -32,7 +32,7 @@ int pos180 = 352000; // ideal calibration for 180 degrees
 // pos must be a value from 0 to 180
 void servo_set(float pos)
 {
-    static int lastVal = pos0;
+    int lastVal = pos0;
     int val = pos / 180 * (pos180 - pos0) + pos0;
     TIMER1_TBPR_R = val >> 16;
     TIMER1_TBILR_R = val & 0xFFFF;

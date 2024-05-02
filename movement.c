@@ -10,44 +10,108 @@
 #include "lcd.h"
 #include "uart-interrupt.h"
 
+//double move_forward(oi_t *sensor_data, double distance_mm)
+//{
+//    double sum = 0;
+//    while (sum < distance_mm)
+//    {
+//        oi_setWheels(500, 500);
+//        oi_update(sensor_data);
+//        sum += sensor_data->distance;
+//        lcd_printf("distance: %.2f", sum);
+//        if (sensor_data->bumpLeft)
+//        {
+//            move_backward(sensor_data, 25);
+//            turn_right(sensor_data, 90 * 0.9);
+//            move_forward(sensor_data, 80);
+//            turn_left(sensor_data, 90 * 0.9);
+//            move_forward(sensor_data, 80);
+//            turn_left(sensor_data, 90 * 0.9);
+//            move_forward(sensor_data, 80);
+//            turn_right(sensor_data, 90 * 0.9);
+//            sum += 80;
+//        }
+//        else if (sensor_data->bumpRight)
+//        {
+//            move_backward(sensor_data, 25);
+//            turn_left(sensor_data, 90 * 0.9);
+//            move_forward(sensor_data, 80);
+//            turn_right(sensor_data, 90 * 0.9);
+//            move_forward(sensor_data, 80);
+//            turn_right(sensor_data, 90 * 0.9);
+//            move_forward(sensor_data, 80);
+//            turn_left(sensor_data, 90 * 0.9);
+//            sum += 80;
+//        }
+//        CHECK_KILL sum;
+//    }
+//    oi_setWheels(0, 0); // Stop and don't crash into literally everything :D
+//
+//    return sum;
+//}
+
 double move_forward(oi_t *sensor_data, double distance_mm)
 {
     double sum = 0;
+    oi_setWheels(500, 500);
     while (sum < distance_mm)
     {
-        oi_setWheels(500, 500);
         oi_update(sensor_data);
         sum += sensor_data->distance;
         lcd_printf("distance: %.2f", sum);
-        if (sensor_data->bumpLeft)
-        {
-            move_backward(sensor_data, 25);
-            turn_right(sensor_data, 90 * 0.9);
-            move_forward(sensor_data, 80);
-            turn_left(sensor_data, 90 * 0.9);
-            move_forward(sensor_data, 80);
-            turn_left(sensor_data, 90 * 0.9);
-            move_forward(sensor_data, 80);
-            turn_right(sensor_data, 90 * 0.9);
-            sum += 80;
-        }
-        else if (sensor_data->bumpRight)
-        {
-            move_backward(sensor_data, 25);
-            turn_left(sensor_data, 90 * 0.9);
-            move_forward(sensor_data, 80);
-            turn_right(sensor_data, 90 * 0.9);
-            move_forward(sensor_data, 80);
-            turn_right(sensor_data, 90 * 0.9);
-            move_forward(sensor_data, 80);
-            turn_left(sensor_data, 90 * 0.9);
-            sum += 80;
-        }
-        CHECK_KILL sum;
+        CHECK_KILL;
     }
     oi_setWheels(0, 0); // Stop and don't crash into literally everything :D
 
     return sum;
+}
+
+//Move to scan??
+void smallObjectProtection(oi_t *sensor_data, double distance_mm){
+    double sum = 0;
+    while(sum < distance_mm){
+        oi_setWheels(500, 500);
+        oi_update(sensor_data);
+        sum += sensor_data->distance;
+//      lcd_printf("distance: %.2f", sum);
+        if (sensor_data->bumpLeft){
+            move_backward(sensor_data, 25);
+            turn_right(sensor_data, 90 * 0.9);
+            move_forward(sensor_data, 80);
+            turn_left(sensor_data, 90 * 0.9);
+            move_forward(sensor_data, 80);
+            turn_left(sensor_data, 90 * 0.9);
+            move_forward(sensor_data, 80);
+            turn_right(sensor_data, 90 * 0.9);
+            sum += 80;
+         }
+         else if (sensor_data->bumpRight){
+             move_backward(sensor_data, 25);
+             turn_left(sensor_data, 90 * 0.9);
+             move_forward(sensor_data, 80);
+             turn_right(sensor_data, 90 * 0.9);
+             move_forward(sensor_data, 80);
+             turn_right(sensor_data, 90 * 0.9);
+             move_forward(sensor_data, 80);
+             turn_left(sensor_data, 90 * 0.9);
+             sum += 80;
+          }
+
+
+        //Idea for cliff sensors????
+        if(sensor_data->cliffLeft || sensor_data->cliffFrontLeft){
+            move_backward(sensor_data, 40);
+            turn_right(sensor_data, 90 * 0.9);
+        }
+        else if(sensor_data->cliffRight || sensor_data->cliffFrontRight){
+            move_backward(sensor_data, 40);
+            turn_left(sensor_data, 90 * 0.9);
+        }
+
+
+    }
+      CHECK_KILL (int)sum;
+      oi_setWheels(0, 0);
 }
 
 double move_backward(oi_t *sensor_data, double distance_mm)

@@ -30,6 +30,12 @@ extern volatile int run_go;
 extern volatile int kill_action;
 extern volatile char byte_received;
 
+#define BUFFER_MAX_LEN 80 // 80 characters should be more than enough for anyone!
+
+extern volatile char buffer[BUFFER_MAX_LEN];
+extern volatile int buffer_len;
+extern volatile int buffer_ready;
+
 #define CHECK_KILL if (kill_action) return
 
 // UART1 device initialization for CyBot to PuTTY

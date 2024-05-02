@@ -364,18 +364,25 @@ int main(void)
 
 
 
-    //Nina Gadelha 5/2/2024 
-
-    //Initialize everything: maybe more?
-    timer_init();
-    lcd_init();
-    uart_interrupt_init();
-    ping_init();
-    servo_init();
-
+    //Nina Gadelha 5/2/2024 1:10am
     //TODO: send GUI distances/other info
 
+    // void scan(int start, int end, int count);
+    // void pingScan(int angle);
+    // double move_forward();
+    // double move_backward();
+    // double turn_left();
+    // double turn_right();
+
+    //in main
     while(1){
+
+        //Initialize everything: maybe more?
+        timer_init();
+        lcd_init();
+        uart_interrupt_init();
+        ping_init();
+        servo_init();
 
         oi_init(sensor_data);
 
